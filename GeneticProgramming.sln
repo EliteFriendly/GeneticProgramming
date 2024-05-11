@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.8.34330.188
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "GeneticProgramming", "GeneticProgramming\GeneticProgramming.vcxproj", "{DE2E04A9-4CC6-40AA-866A-DA387E05DB2E}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|x64 = Debug|x64
+		Debug|x86 = Debug|x86
+		Release|x64 = Release|x64
+		Release|x86 = Release|x86
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{DE2E04A9-4CC6-40AA-866A-DA387E05DB2E}.Debug|x64.ActiveCfg = Debug|x64
+		{DE2E04A9-4CC6-40AA-866A-DA387E05DB2E}.Debug|x64.Build.0 = Debug|x64
+		{DE2E04A9-4CC6-40AA-866A-DA387E05DB2E}.Debug|x86.ActiveCfg = Debug|Win32
+		{DE2E04A9-4CC6-40AA-866A-DA387E05DB2E}.Debug|x86.Build.0 = Debug|Win32
+		{DE2E04A9-4CC6-40AA-866A-DA387E05DB2E}.Release|x64.ActiveCfg = Release|x64
+		{DE2E04A9-4CC6-40AA-866A-DA387E05DB2E}.Release|x64.Build.0 = Release|x64
+		{DE2E04A9-4CC6-40AA-866A-DA387E05DB2E}.Release|x86.ActiveCfg = Release|Win32
+		{DE2E04A9-4CC6-40AA-866A-DA387E05DB2E}.Release|x86.Build.0 = Release|Win32
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {246CC352-B8E7-4466-963E-68250BE4A3AE}
+	EndGlobalSection
+EndGlobal
