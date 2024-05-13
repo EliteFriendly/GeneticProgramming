@@ -5,6 +5,7 @@ Tree::Tree(int d)
 	//Случай если дошли до самого конца
 	if (d == 0) {
 		unarFuncUs = true;
+		lastVertice = true;
 		numberFunc = 0;
 		numVertices = 1;
 		return;
@@ -24,7 +25,7 @@ Tree::Tree(int d)
 	else {
 		//В случае если бинарная
 		unarFuncUs = false;
-		numberFunc = rand() % (binarFunc.size());
+		numberFunc = rand() % (binaryFunc.size());
 		//Tree l(d - 1);
 		//Tree r(d - 1);
 		left = new Tree(d - 1);
@@ -41,7 +42,7 @@ void Tree::out()
 		left->out();
 	}
 	if (unarFuncUs) {
-		if (numberFunc == 0) {
+		if (lastVertice) {//У последней вершины обязан быть какой то коэффициент
 			cout << coef << '*';
 		}
 		cout<<strUnarFunc[numberFunc];
@@ -55,9 +56,31 @@ void Tree::out()
 	}
 }
 
+void Tree::changeCoef(vector<double>& in,int &z)
+{
+	//Заполнение будет происходить слева направо
+	if (left != nullptr) {//Идем сначала по левой стороне до конца
+		left->changeCoef(in, z);
+	}
+	if (right != nullptr) {//Если нет ничего слева
+		right->changeCoef(in, z);
+	}
+	if (lastVertice) {
+		if (z >= in.size()) {//Слуай если выйдет за границы массива
+			coef = 0;
+		}
+		else {
+
+			coef = in[z];//Замена коэффициентов в слечае если все ок
+		}
+		z++;//Работа с памятью!!!
+	}
+}
+
 double Tree::getNumVertices()
 {
-	if (left == nullptr and right == nullptr) {
+
+	if (lastVertice) {
 		return numVertices;
 	}
 	if (left != nullptr) {
@@ -67,4 +90,19 @@ double Tree::getNumVertices()
 		numVertices += right->getNumVertices();
 	}
 	return numVertices;
+}
+
+double Tree::getValue(double x)
+{
+	if (right != nullptr) {//Если справа что то есть то это точно унарная функци
+		return unarFunc[numberFunc](right->getValue(x));
+		
+	}
+	if (lastVertice) {//Если дошли до вершины
+		return coef * unarFunc[numberFunc](x);
+	}
+	else {//Если попались в унарную функцию
+		return binaryFunc[numberFunc](left->getValue(x),right->getValue(x));
+	}
+	
 }
