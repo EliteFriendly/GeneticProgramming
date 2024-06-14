@@ -8,29 +8,24 @@ using namespace std;
 
 
 /*
-яйнпее бяецн оняке йнохпнбюмхъ хмдхбхдю х опелемъъ й мелс лсрюжхч, лнфер онлемърэяъ х нпхцхмюк опнбепэ!!!!
+щрнр юкцнпхрл пеюкхгнбюм рнкэйн дкъ 1 бундю х 1 бшундю
 
 */
 
 
 void main() {
-	srand(3);
+	srand(6);
 	//srand(time(0));
 
-	int z = 0;
-	int* x = &z;
-	int* y =x;
-	y = *(*y + 1);
+
 
 	vector <double> change = { 1.0, 2.0, 3.0 };
 	MutationGP mut;
-	Tree proba1(2);
-	proba1.out();
-	cout << endl;
-	Tree proba2(2);
+	Tree proba1(10);
+	Tree proba2(10);
 	CrossoverGP cross;
 
-	Tree child = cross.getChilde(proba1, proba2);
+	Tree child = cross.getChild(proba1, proba2);
 
 	proba1.out();
 	cout << endl;

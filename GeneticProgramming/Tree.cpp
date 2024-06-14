@@ -87,7 +87,7 @@ void Tree::changeCoef(vector<double>& in,int &z)
 		right->changeCoef(in, z);
 	}
 	if (lastVertice) {
-		if (z >= in.size()) {//Слуай если выйдет за границы массива
+		if (z >= in.size()) {//Случай если выйдет за границы массива
 			coef = 0;
 		}
 		else {
@@ -128,17 +128,25 @@ double Tree::getValue(double x)
 	
 }
 
-void Tree::replaceNode(int search, Tree& newNode)
+void Tree::replaceNode(int search, Tree& newNode)//Замена выбранного узла
 {
-	if (numNodes == search) {
-		unarFuncUs = newNode.unarFuncUs;//Используется ли унарная функция true/false
+	if (numNodes == search) {//Если мы дошли до узла под каким то номером
+		unarFuncUs = newNode.unarFuncUs;
+		if (unarFuncUs and left != nullptr) {//Если наследовалась унарная функция
+			left = nullptr;
+		}
 		lastVertice = newNode.lastVertice;
-		left = newNode.left;
-		right = newNode.right;
+		if (newNode.left != nullptr) {//Выделение памяти
+			left = new Tree(*newNode.left);
+		}
+		if (newNode.right != nullptr) {
+			right = new Tree(*newNode.right);
+		}
 		numberFunc = newNode.numberFunc;//Номер функции который используется в узле
 		numVertices = newNode.numVertices;//Количество вершин
 
 	}
+	//Поиск по другим узлам если не нашли подходящего номера
 	if (left != nullptr and search <= left->getNumNodes()) {
 		left->replaceNode(search, newNode);
 	}

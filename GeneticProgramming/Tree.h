@@ -45,14 +45,15 @@ public:
 	Tree() {}
 	Tree(const Tree &copy) :numberFunc(copy.numberFunc), lastVertice(copy.lastVertice),
 		unarFuncUs(copy.unarFuncUs), coef(copy.coef),numVertices(copy.numVertices),numNodes(copy.numNodes) {
-		left = copy.left;
-		right = copy.right;
+		//Выделение памяти чтобы не было кучи взаимосвязанных индивидлв
+		if (copy.left != nullptr) {
+			left = new Tree(*copy.left);
+		}
+		if (copy.right != nullptr) {
+			right = new Tree(*copy.right);
+		}
 	}
-	/*Tree(const Tree *copy) :numberFunc(copy->numberFunc), lastVertice(copy->lastVertice),
-		unarFuncUs(copy->unarFuncUs), coef(copy->coef), numVertices(copy->numVertices), numNodes(copy->numNodes) {
-		left = copy->left;
-		right = copy->right;
-	}*/
+
 	Tree(int d);
 	void out();
 	void countNodes(int&);

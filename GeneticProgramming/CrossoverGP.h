@@ -8,6 +8,6 @@ using namespace std;
 class CrossoverGP
 {
 public:
-	Tree getChilde(Tree &first,Tree &second);
+	Tree getChild(Tree &first,Tree &second);
 };
 

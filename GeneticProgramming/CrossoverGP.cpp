@@ -1,16 +1,18 @@
 #include "CrossoverGP.h"
 
-Tree CrossoverGP::getChilde(Tree &first, Tree &second)
+Tree CrossoverGP::getChild(Tree &first, Tree &second)
 {
-	 //Поиск узла первого родителя
+	//Выбор рандомного узла первого родителя
 	Tree child (first);
 	int r = child.getNumNodes();
 	int chosenNode = rand() % r + 1;
-	//Поиск узла для 2 родителя
+
+	//Выбор рандомного узла для 2 родителя
 	int r2 = second.getNumNodes();
 	chosenNode = rand() % r2 + 1;
 	Tree* nodeParent = &second;
 	bool t = false;
+	//Начало спуска до этого узла
 	while (t == false) {
 		if (nodeParent->getNumNodes() == chosenNode) {
 			t = true;
@@ -27,9 +29,9 @@ Tree CrossoverGP::getChilde(Tree &first, Tree &second)
 
 
 	}
-
+	//Замена у ребенка выбраного узла у первого и второго родителя
 	child.replaceNode(chosenNode, *nodeParent);
-
+	//Используется чтобы пронумеровать все узлы
 	int z = 0;
 	child.countNodes(z);
 	return child;
