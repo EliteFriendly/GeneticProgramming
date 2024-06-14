@@ -39,14 +39,23 @@ private:
 	};//Выборка из бинарных функций
 
 
-	void countNodes(int&);
-
+	
 
 public:
-	Tree(const Tree& copy) :numberFunc(copy.numberFunc), left(copy.left), right(copy.right), lastVertice(copy.lastVertice),
-		unarFunc(copy.unarFunc), coef(copy.coef),numVertices(copy.numVertices),numNodes(copy.numNodes) {}
+	Tree() {}
+	Tree(const Tree &copy) :numberFunc(copy.numberFunc), lastVertice(copy.lastVertice),
+		unarFuncUs(copy.unarFuncUs), coef(copy.coef),numVertices(copy.numVertices),numNodes(copy.numNodes) {
+		left = copy.left;
+		right = copy.right;
+	}
+	/*Tree(const Tree *copy) :numberFunc(copy->numberFunc), lastVertice(copy->lastVertice),
+		unarFuncUs(copy->unarFuncUs), coef(copy->coef), numVertices(copy->numVertices), numNodes(copy->numNodes) {
+		left = copy->left;
+		right = copy->right;
+	}*/
 	Tree(int d);
 	void out();
+	void countNodes(int&);
 	void changeCoef(vector<double>&,int&);
 	double getNumVertices();
 	double getValue(double x);
@@ -62,9 +71,9 @@ public:
 			right->~Tree();
 		}
 	}
-
-
-	void randFunc() {
+	void replaceNode(int, Tree&);
+	
+	void randFunc() {//Используется для оператора мутации
 		if (unarFuncUs) {
 			numberFunc = rand() % unarFunc.size();
 		}

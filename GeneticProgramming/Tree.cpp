@@ -127,3 +127,22 @@ double Tree::getValue(double x)
 	}
 	
 }
+
+void Tree::replaceNode(int search, Tree& newNode)
+{
+	if (numNodes == search) {
+		unarFuncUs = newNode.unarFuncUs;//Используется ли унарная функция true/false
+		lastVertice = newNode.lastVertice;
+		left = newNode.left;
+		right = newNode.right;
+		numberFunc = newNode.numberFunc;//Номер функции который используется в узле
+		numVertices = newNode.numVertices;//Количество вершин
+
+	}
+	if (left != nullptr and search <= left->getNumNodes()) {
+		left->replaceNode(search, newNode);
+	}
+	if (right != nullptr and search <= right->getNumNodes()) {
+		right->replaceNode(search, newNode);
+	}
+}
