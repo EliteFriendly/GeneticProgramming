@@ -24,12 +24,18 @@
     <ClCompile Include="CrossoverGP.cpp">
       <Filter>Исходные файлы</Filter>
     </ClCompile>
+    <ClCompile Include="MutationGP.cpp">
+      <Filter>Исходные файлы</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Tree.h">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
     <ClInclude Include="CrossoverGP.h">
+      <Filter>Файлы заголовков</Filter>
+    </ClInclude>
+    <ClInclude Include="MutationGP.h">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
   </ItemGroup>

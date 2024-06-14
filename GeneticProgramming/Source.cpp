@@ -1,24 +1,29 @@
 #include <iostream>
 #include <vector>
+#include "MutationGP.h"
 #include "Tree.h"
 
 using namespace std;
 
 void main() {
-	srand(3);
+	srand(2);
+	//srand(time(0));
 	int z = 0;
+
+
 	vector <double> change = { 1.0, 2.0, 3.0 };
-
-	int x = 4;
-	int& y = x;
-	int q = 5;
-	int* w = &q;
-	y = *w;
-	cout << x;
-
-	Tree proba(6);
+	MutationGP mut;
+	Tree proba(5);
 	proba.changeCoef(change, z);
 	proba.out();
+
+	mut.getMutChild(proba);
 	cout << endl;
-	cout << proba.getValue(1);
+	proba.out();
+	mut.getMutChild(proba);
+	cout << endl;
+	proba.out();
+	cout << endl;
+	cout << proba.getNumNodes()<<endl;
+	//cout << proba.getValue(1);
 }

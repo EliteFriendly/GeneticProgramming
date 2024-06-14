@@ -1,5 +1,21 @@
 #include "Tree.h"
 
+void Tree::countNodes(int& ammount)
+{
+	
+	if (left != nullptr) {
+		left->countNodes(ammount);
+	}
+	if (right != nullptr) {
+		right->countNodes(ammount);
+	}
+	if (lastVertice == false) {
+		ammount++;
+	}
+	
+	numNodes = ammount;
+}
+
 Tree::Tree(int d)
 {
 	//Случай если дошли до самого конца
@@ -31,7 +47,8 @@ Tree::Tree(int d)
 		left = new Tree(d - 1);
 		right = new Tree(d - 1);
 	}
-
+	int i = 0;
+	countNodes(i);
 }
 
 void Tree::out()
@@ -45,7 +62,11 @@ void Tree::out()
 		if (lastVertice) {//У последней вершины обязан быть какой то коэффициент
 			cout << coef << '*';
 		}
-		cout<<strUnarFunc[numberFunc];
+		cout << strUnarFunc[numberFunc];
+		if (lastVertice==false) {
+			cout << '(';
+		}
+		
 	}
 	else {
 		cout<< strBinaryFunc[numberFunc];
