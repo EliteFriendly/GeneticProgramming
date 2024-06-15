@@ -16,6 +16,18 @@ void Tree::countNodes(int& ammount)
 	numNodes = ammount;
 }
 
+void Tree::calcFitness(vector<double> x, vector<double> y,double K1)
+{
+	double error = 0;
+	for (int i = 0; i < y.size(); i++) {
+		error += pow(x[i] - getValue(x[i]), 2);
+	}
+	fitness = 1 / (1 + pow(error, 0.5)) * (20 - K1 * numNodes);
+	if (fitness == NAN) {
+		cout << 1;
+	}
+}
+
 Tree::Tree(int d)
 {
 	//Случай если дошли до самого конца
@@ -61,11 +73,18 @@ void Tree::out()
 	if (unarFuncUs) {
 		if (lastVertice) {//У последней вершины обязан быть какой то коэффициент
 			cout << coef << '*';
+			cout << strUnarFunc[numberFunc];
 		}
-		cout << strUnarFunc[numberFunc];
-		if (lastVertice==false) {
-			cout << '(';
+		if (numberFunc == 0) {
+
 		}
+		else {
+			cout << strUnarFunc[numberFunc];
+			if (lastVertice == false) {
+				cout << '(';
+			}
+		}
+		
 		
 	}
 	else {
@@ -115,14 +134,16 @@ double Tree::getNumVertices()
 
 double Tree::getValue(double x)
 {
-	if (right != nullptr) {//Если справа что то есть то это точно унарная функци
+	if (right != nullptr and left ==nullptr) {//Если справа что то есть то это точно унарная функци
+
 		return unarFunc[numberFunc](right->getValue(x));
 		
 	}
 	if (lastVertice) {//Если дошли до вершины
-		return coef * unarFunc[numberFunc](x);
+		double y = coef * unarFunc[numberFunc](x);
+		return y;
 	}
-	else {//Если попались в унарную функцию
+	else {//Если попались в бинарную функцию
 		return binaryFunc[numberFunc](left->getValue(x),right->getValue(x));
 	}
 	
@@ -137,14 +158,14 @@ void Tree::replaceNode(int search, Tree& newNode)//Замена выбранного узла
 		}
 		lastVertice = newNode.lastVertice;
 		if (newNode.left != nullptr) {//Выделение памяти
-			left = new Tree(*newNode.left);
+			left = new Tree(*(newNode.left));
 		}
 		if (newNode.right != nullptr) {
-			right = new Tree(*newNode.right);
+			right = new Tree(*(newNode.right));
 		}
 		numberFunc = newNode.numberFunc;//Номер функции который используется в узле
 		numVertices = newNode.numVertices;//Количество вершин
-
+		unarFunc = newNode.unarFunc;
 	}
 	//Поиск по другим узлам если не нашли подходящего номера
 	if (left != nullptr and search <= left->getNumNodes()) {

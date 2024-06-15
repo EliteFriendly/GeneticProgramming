@@ -13,7 +13,8 @@ private:
 	int numVertices=0;//Количество вершин
 	int numNodes;//Количество узлов ниже
 
-	double coef;//Коэффициент перед x в вершинах
+	double coef = 1;//Коэффициент перед x в вершинах
+	double fitness=-9999999;//Ну тут понятно
 
 	bool unarFuncUs;//Используется ли унарная функция true/false
 	bool lastVertice = false;
@@ -27,15 +28,15 @@ private:
 		[](double x) {return x; },
 		[](double x) {return sin(x); },
 		[](double x) {return cos(x); },
-		[](double x) {return log(x); },
-		[](double x) {return exp(x); }
+		[](double x) {if (x == 0) return 0.0; return log(abs(x)); },
+		[](double x) {if (x > 10) return exp(10); return exp(x); }
 
 	};//Выборка из унарных функций
 	vector<function <double(double, double)>> binaryFunc = {
 		[](double x,double y) {return x + y; },
 		[](double x,double y) {return x - y; },
 		[](double x,double y) {return x * y; },
-		[](double x,double y) {return x / y; }
+		[](double x,double y) {if (y == 0) return 0.0; return x / y; }
 	};//Выборка из бинарных функций
 
 
@@ -44,16 +45,24 @@ private:
 public:
 	Tree() {}
 	Tree(const Tree &copy) :numberFunc(copy.numberFunc), lastVertice(copy.lastVertice),
-		unarFuncUs(copy.unarFuncUs), coef(copy.coef),numVertices(copy.numVertices),numNodes(copy.numNodes) {
+		unarFuncUs(copy.unarFuncUs), coef(copy.coef),numVertices(copy.numVertices),numNodes(copy.numNodes),fitness(copy.fitness),
+		unarFunc(copy.unarFunc)
+	{
 		//Выделение памяти чтобы не было кучи взаимосвязанных индивидлв
 		if (copy.left != nullptr) {
-			left = new Tree(*copy.left);
+			//left = new Tree;
+			left = new Tree(*(copy.left));
 		}
 		if (copy.right != nullptr) {
-			right = new Tree(*copy.right);
+			//right = new Tree;
+			right = new Tree(*(copy.right));
 		}
 	}
 
+	void calcFitness(vector<double> x, vector<double> y,double K1);
+	double getFitness() {
+		return fitness;
+	}
 	Tree(int d);
 	void out();
 	void countNodes(int&);
@@ -64,14 +73,14 @@ public:
 		
 		return numNodes;//numNodes;
 	}
-	~Tree() {
-		if (left != nullptr) {
-			left->~Tree();
-		}
-		if (right != nullptr) {
-			right->~Tree();
-		}
-	}
+	//~Tree() {
+	//	if (left != nullptr) {
+	//		delete left;
+	//	}
+	//	if (right != nullptr) {
+	//		delete right;
+	//	}
+	//}
 	void replaceNode(int, Tree&);
 	
 	void randFunc() {//Используется для оператора мутации

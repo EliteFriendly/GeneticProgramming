@@ -128,13 +128,19 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="CrossoverGP.cpp" />
+    <ClCompile Include="FormingGP.cpp" />
+    <ClCompile Include="GeneticProgramming.cpp" />
     <ClCompile Include="MutationGP.cpp" />
+    <ClCompile Include="SelectionGP.cpp" />
     <ClCompile Include="Source.cpp" />
     <ClCompile Include="Tree.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="CrossoverGP.h" />
+    <ClInclude Include="FormingGP.h" />
+    <ClInclude Include="GeneticProgramming.h" />
     <ClInclude Include="MutationGP.h" />
+    <ClInclude Include="SelectionGP.h" />
     <ClInclude Include="Tree.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
