@@ -49,8 +49,8 @@ void main() {
 	}
 
 	
-	GeneticProgramming proba(1, 5, 5);
-	proba.startTrain(xTrain, yTrain, 100, 100);
+	GeneticProgramming proba(1, 2, 3);
+	proba.startTrain(xTrain, yTrain, 5, 5);
 
 	proba.getBest().out();
 
