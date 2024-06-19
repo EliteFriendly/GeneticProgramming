@@ -20,9 +20,9 @@ void Tree::calcFitness(vector<double> x, vector<double> y,double K1)
 {
 	double error = 0;
 	for (int i = 0; i < y.size(); i++) {
-		error += pow(x[i] - getValue(x[i]), 2);
+		error += pow(y[i] - getValue(x[i]), 2);
 	}
-	fitness = 1 / (1 + pow(error, 0.5)) * (20 - K1 * numNodes);
+	fitness = (1 / (1 + pow(error, 0.5))) * (20 - K1 * numNodes);
 	if (fitness == NAN) {
 		cout << 1;
 	}
@@ -74,15 +74,20 @@ void Tree::out()
 		if (lastVertice) {//У последней вершины обязан быть какой то коэффициент
 			cout << coef << '*';
 			cout << strUnarFunc[numberFunc];
+			
 		}
-		if (numberFunc == 0) {
-
-		}
+		
 		else {
-			cout << strUnarFunc[numberFunc];
-			if (lastVertice == false) {
+			if (numberFunc == 0 and !lastVertice) {
 				cout << '(';
 			}
+			else {
+				cout << strUnarFunc[numberFunc];
+				if (lastVertice == false) {
+					cout << '(';
+				}
+			}
+			
 		}
 		
 		

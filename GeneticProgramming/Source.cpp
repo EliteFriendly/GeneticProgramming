@@ -8,7 +8,7 @@ using namespace std;
 
 
 double func1(double x) {
-	return sin(x) + cos(x);
+	return pow(x,0.5);
 }
 
 
@@ -28,29 +28,23 @@ void main() {
 	int ammount = 100;//Количество точен
 	int i1 = 0;//Счетчики
 	int i2 = 0;
-	double left = 0;
+	double left = 1;
 	double right = 10;
 	double h = (right - left) / ammount;
-	vector<double> xTrain(int(0.8 * ammount));
-	vector<double> yTrain(int(0.8 * ammount));
-	vector<double> xTest(int(0.2 * ammount));
-	vector<double> yTest(int(0.2 * ammount));
+	vector<double> xTrain(ammount);
+	vector<double> yTrain(ammount);
 	for (int i = 0; i < ammount; i++) {
-		if (i % 5 != 0) {
-			xTrain[i1] = left + (i-1) * h;
-			yTrain[i1] = func1(xTrain[i1]);
-			i1++;
-		}
-		else {
-			xTest[i2] = left + (i-1) * h;
-			yTest[i2] = func1(xTest[i2]);
-			i2++;
-		}
+		
+		xTrain[i] = left + (i-1) * h;
+		yTrain[i] = func1(xTrain[i]);
+
+		
+		
 	}
 
 	
-	GeneticProgramming proba(1, 2, 3);
-	proba.startTrain(xTrain, yTrain, 5, 5);
+	GeneticProgramming proba(1, 4, 3);
+	proba.startTrain(xTrain, yTrain, 50, 50);
 
 	proba.getBest().out();
 

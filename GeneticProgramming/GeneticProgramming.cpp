@@ -36,6 +36,8 @@ void GeneticProgramming::startTrain(vector<double> x, vector<double> y, int numI
 			arrayChildren[j] = crossover.getChild(arrayIndividuals[numParent1], arrayIndividuals[numParent2]);
 			mutation.getMutChild(arrayChildren[j]);
 			arrayChildren[j].calcFitness(x, y, K1);
+			/*arrayChildren[j].out();
+			cout << endl;*/
 		}
 		forming.replaceGeneration(arrayIndividuals, arrayChildren);
 		findBest();
