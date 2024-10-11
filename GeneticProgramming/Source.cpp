@@ -3,15 +3,86 @@
 #include "MutationGP.h"
 #include "Tree.h"
 #include "CrossoverGP.h"
+#include <fstream>
 #include "GeneticProgramming.h"
+#include "GeneratePoints.h"
 using namespace std;
 
-
+double func0(double x) {
+	return x;
+}
 double func1(double x) {
-	return pow(x,0.5);
+	return 3*sin(x) + 5*cos(x);
 }
 
 
+double func2(double x) {
+	return pow(10*x,0.5);
+}
+double func3(double x) {
+	return pow(x, 1.5) + 10 * sin(x);
+}
+
+
+void automat(int number) {
+
+
+	double left = 0.2;
+	double right = 10;
+	int ammount = 100;
+
+	GeneratePoints point(func0, left, right);
+	point.readFromFile("Input_" + to_string(number));
+
+	vector<double> x = point.getVectorX();
+	vector<double> y = point.getVectorY();
+
+	int i1 = 0, i2 = 0;
+	
+	vector<double> xTrain(ammount * 0.8);
+	vector<double> yTrain(ammount * 0.8);
+
+	vector<double> xTest(ammount * 0.2);
+	vector<double> yTest(ammount * 0.2);
+
+	for (int i = 0; i < ammount; i++) {
+		if (!(i % 5)) {
+			xTest[i2] = x[i];
+			yTest[i2] = y[i];
+			i2++;
+		}
+		else {
+			xTrain[i1] = x[i]; 
+			yTrain[i1] = y[i];
+			i1++;
+		}
+	}
+
+
+
+	GeneticProgramming proba(1.5, 2, 3);
+	proba.startTrain(x, y, 50, 50);
+
+	ofstream error("Results/Error_" + to_string(number) + ".txt");
+	error << proba.getError(xTest, yTest);
+	error.close();
+	
+	ofstream f("Results/Function_" + to_string(number) + ".txt");
+	f << proba.getBest().getFunc();
+	f.close();
+
+	proba.getBest().out();
+
+	ammount = 10000;
+	ofstream file("Results/Out_"+to_string(number)+".txt");
+	
+	double h = (right - left) / ammount;
+	for (int i = 0; i < ammount; i++) {
+		file << left + (i - 1) * h << '\t';
+		file << proba.getBest().getValue(left + i * h) << endl;
+	}
+	file.close();
+}
 
 
 /*
@@ -26,34 +97,19 @@ void main() {
 	srand(time(0));
 	//Формирование выборки для обучения
 	int ammount = 100;//Количество точен
-	int i1 = 0;//Счетчики
-	int i2 = 0;
-	double left = 1;
+	double left = 0;
 	double right = 10;
-	double h = (right - left) / ammount;
-	vector<double> xTrain(ammount);
-	vector<double> yTrain(ammount);
-	for (int i = 0; i < ammount; i++) {
-		
-		xTrain[i] = left + (i-1) * h;
-		yTrain[i] = func1(xTrain[i]);
 
-		
-		
-	}
 
 	
-	GeneticProgramming proba(1, 4, 3);
-	proba.startTrain(xTrain, yTrain, 50, 50);
+	cout << "First func" << endl;
+	automat(1);
+	/*cout << "Second func" << endl;
+	automat(2);*/
+	/*cout << "Third func" << endl;
+	automat(3);*/
 
-	proba.getBest().out();
 
-
-	//for (int i = 0; i < 80; i++) {
-	//	cout << proba.getBest().getValue(xTrain[i]) << " " ;
-	//	cout << yTrain[i]<<endl;
-
-	//}
 
 
 

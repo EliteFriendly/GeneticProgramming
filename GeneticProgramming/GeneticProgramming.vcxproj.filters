@@ -13,6 +13,9 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
+    <Filter Include="Diff evolution">
+      <UniqueIdentifier>{a8578f13-cf7b-45ae-a192-57ba3be4ca4d}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source.cpp">
@@ -36,6 +39,15 @@
     <ClCompile Include="FormingGP.cpp">
       <Filter>Исходные файлы</Filter>
     </ClCompile>
+    <ClCompile Include="Diff_evolution\IndividualDiffEvolution.cpp">
+      <Filter>Diff evolution</Filter>
+    </ClCompile>
+    <ClCompile Include="Diff_evolution\DiffMutation.cpp">
+      <Filter>Diff evolution</Filter>
+    </ClCompile>
+    <ClCompile Include="Diff_evolution\DiffEvolution.cpp">
+      <Filter>Diff evolution</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Tree.h">
@@ -55,6 +67,18 @@
     </ClInclude>
     <ClInclude Include="FormingGP.h">
       <Filter>Файлы заголовков</Filter>
+    </ClInclude>
+    <ClInclude Include="GeneratePoints.h">
+      <Filter>Файлы заголовков</Filter>
+    </ClInclude>
+    <ClInclude Include="Diff_evolution\IndividualDiffEvolution.h">
+      <Filter>Diff evolution</Filter>
+    </ClInclude>
+    <ClInclude Include="Diff_evolution\DiffMutation.h">
+      <Filter>Diff evolution</Filter>
+    </ClInclude>
+    <ClInclude Include="Diff_evolution\DiffEvolution.h">
+      <Filter>Diff evolution</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

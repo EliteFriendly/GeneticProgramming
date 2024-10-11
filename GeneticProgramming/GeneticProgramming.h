@@ -33,5 +33,17 @@ public:
 	Tree getBest() {
 		return bestIndividual;
 	}
+	double getError(vector<double> x, vector<double>y) {
+		double sum = 0;//Среднеквадратичная ошибка
+		for (int i = 0; i < x.size(); i++) {
+			sum += pow(bestIndividual.getValue(x[i]) - y[i], 2);
+		}
+		sum = pow(sum / y.size(), 0.5);
+		return sum;
+
+
+
+
+	}
 };
 

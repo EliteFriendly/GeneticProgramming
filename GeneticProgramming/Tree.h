@@ -2,6 +2,9 @@
 #include <functional>
 #include <vector>
 #include <iostream>
+#include "Diff_evolution/DiffEvolution.h"
+
+
 
 using namespace std;
 
@@ -65,6 +68,7 @@ public:
 	}
 	Tree(int d);
 	void out();
+	string getFunc();
 	void countNodes(int&);
 	void changeCoef(vector<double>&,int&);
 	double getNumVertices();
@@ -83,6 +87,8 @@ public:
 	//}
 	void replaceNode(int, Tree&);
 	
+	void trainWithDE(vector<double> x, vector<double> y, double K1);
+
 	void randFunc() {//Используется для оператора мутации
 		if (unarFuncUs) {
 			numberFunc = rand() % unarFunc.size();

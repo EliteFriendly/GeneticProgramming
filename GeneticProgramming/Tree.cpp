@@ -1,4 +1,6 @@
 #include "Tree.h"
+#include <sstream>
+
 
 void Tree::countNodes(int& ammount)
 {
@@ -101,6 +103,48 @@ void Tree::out()
 	}
 }
 
+string Tree::getFunc()
+{
+	stringstream ss;
+	if (left != nullptr) {
+		ss << '(';
+		ss<<left->getFunc();
+	}
+	if (unarFuncUs) {
+		if (lastVertice) {//У последней вершины обязан быть какой то коэффициент
+			ss << coef << '*';
+			ss << strUnarFunc[numberFunc];
+
+		}
+
+		else {
+			if (numberFunc == 0 and !lastVertice) {
+				ss << '(';
+			}
+			else {
+				ss << strUnarFunc[numberFunc];
+				if (lastVertice == false) {
+					ss << '(';
+				}
+			}
+
+		}
+
+
+	}
+	else {
+		ss << strBinaryFunc[numberFunc];
+	}
+	if (right != nullptr) {
+		ss<<right->getFunc();
+		ss << ')';
+	}
+
+
+
+	return ss.str();
+}
+
 void Tree::changeCoef(vector<double>& in,int &z)
 {
 	//Заполнение будет происходить слева направо
@@ -179,4 +223,36 @@ void Tree::replaceNode(int search, Tree& newNode)//Замена выбранного узла
 	if (right != nullptr and search <= right->getNumNodes()) {
 		right->replaceNode(search, newNode);
 	}
+}
+
+void Tree::trainWithDE(vector<double> x, vector<double> y, double K1)
+{
+	int numVertices = getNumVertices();
+
+	function <double(vector<double>)> func = [&](vector<double> input) {
+		int i = 0;
+		changeCoef(input, i);
+		calcFitness(x, y, K1);
+		return fitness;
+		};
+
+	vector<double> limits(numVertices * 2);
+
+	for (int i = 0; i < numVertices * 2; i++) {
+		if (i % 2) {
+			limits[i] = 10;
+		}
+		else {
+			limits[i] = -10;
+		}
+	}
+
+
+	DiffEvolution DE(func, limits, "targetToBest1", "max");
+	DE.startSearch(0.01, 0.5, 0.5, 50, 50);
+	int i = 0;
+	vector<double> coef = DE.getBestCoordinates();
+	changeCoef(coef, i);
+	calcFitness(x, y, K1);
+
 }

@@ -19,7 +19,7 @@ void GeneticProgramming::startTrain(vector<double> x, vector<double> y, int numI
 	for (int i = 0; i < numIndividuals; i++) {
 		Tree t(treeDepth);
 		arrayIndividuals[i] = t;
-		arrayIndividuals[i].calcFitness(x, y, K1);
+		arrayIndividuals[i].trainWithDE(x, y, K1);
 	}
 
 	findBest();//Первый поиск лучшего индивида
@@ -27,6 +27,7 @@ void GeneticProgramming::startTrain(vector<double> x, vector<double> y, int numI
 	int numParent1, numParent2;
 
 	for (int i = 0; i < numGeneration; i++) {
+		cout << "Номер генерации = " << i << endl;
 		for (int j = 0; j < numIndividuals; j++) {
 			numParent1 = selection.getNumParents(arrayIndividuals);
 			numParent2 = selection.getNumParents(arrayIndividuals);
@@ -35,7 +36,8 @@ void GeneticProgramming::startTrain(vector<double> x, vector<double> y, int numI
 			}
 			arrayChildren[j] = crossover.getChild(arrayIndividuals[numParent1], arrayIndividuals[numParent2]);
 			mutation.getMutChild(arrayChildren[j]);
-			arrayChildren[j].calcFitness(x, y, K1);
+
+			arrayChildren[j].trainWithDE(x, y, K1);
 			/*arrayChildren[j].out();
 			cout << endl;*/
 		}
