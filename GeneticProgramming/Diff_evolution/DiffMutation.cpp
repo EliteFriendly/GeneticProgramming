@@ -2,9 +2,9 @@
 
 void DiffMutation::outLimits(IndividualDiffEvolution donor)
 {
-    vector<double> coordinats = donor.getCoordinats();
+    double* coordinats = donor.getCoordinats();
 
-    for (int i = 0; i < limitsDimension.size(); i+=2) {
+    for (int i = 0; i < ammDimens*2; i+=2) {
         if (!(limitsDimension[i] <= donor.getCoordinats()[i / 2]) ) {
             coordinats[i / 2] = (limitsDimension[i] + coordinats[i / 2]) / 2;
         }
@@ -15,16 +15,24 @@ void DiffMutation::outLimits(IndividualDiffEvolution donor)
     donor.replaceCoordinats(coordinats);
 }
 
-IndividualDiffEvolution DiffMutation::getDonor(vector<IndividualDiffEvolution>& arrIndividuals, IndividualDiffEvolution& best)
+IndividualDiffEvolution DiffMutation::getDonor(IndividualDiffEvolution* arrIndividuals, IndividualDiffEvolution& best, int ammInd)
 {
-    selectedInd.resize(ammount);
+    selectedInd = new int[ammount];
     int number;
     IndividualDiffEvolution donor;
 
     for (int i = 0; i < ammount; i++) {
-        number = rand() % arrIndividuals.size();
-        while (find(selectedInd.begin(), selectedInd.end(),number)!= selectedInd.end())
-            number = rand() % arrIndividuals.size();
+        number = rand() % ammInd;
+        int j = 0;
+        while ((j!=ammount or j<=i) and !(ammInd<ammount)) {
+            if (selectedInd[j] == number) {
+                number = rand() % ammInd;
+                j = 0;
+            }
+            else {
+                j++;
+            }
+        }
         selectedInd[i] = number;
     }
 

@@ -5,12 +5,12 @@ IndividualDiffEvolution DiffEvolution::crossover(IndividualDiffEvolution donor)
 {
 	
 	int ammount=0;//Количество раз когда поменялся вектор
-	int number = rand() % arrIndividuals.size();//Номер родителя
+	int number = rand() % N;//Номер родителя
 	double rep;//Вероятность поменять координаты
-	vector<double> coordinates = donor.getCoordinats();
+	double* coordinates = donor.getCoordinats();
 
 	//Процесс изменения гена
-	for (int i = 0; i < (limitsDimension.size() / 2); i++) {
+	for (int i = 0; i < ammDimens; i++) {
 		rep = rand() % 1000 / 1000.0;
 		if (rep < Cr) {
 			coordinates[i] = arrIndividuals[number].getCoordinats()[i];
@@ -18,7 +18,7 @@ IndividualDiffEvolution DiffEvolution::crossover(IndividualDiffEvolution donor)
 		}
 	}
 	if (ammount == 0) {//В случае если ген ни разу не поменялся
-		int ran = rand() % (limitsDimension.size() / 2);
+		int ran = rand() % ammDimens;
 		coordinates[ran] = arrIndividuals[number].getCoordinats()[ran];
 	}
 	donor.replaceCoordinats(coordinates);
@@ -51,13 +51,16 @@ void DiffEvolution::startSearch(double acc, double F, double Cr, int N, int gene
 	DiffEvolution::generations = generations;
 	mutation.setF(F);//Установака для корректной работы мутации
 
-	arrIndividuals.resize(N);
-	//std::sort(arrIndividuals.begin(), arrIndividuals.end());
+	arrIndividuals = new IndividualDiffEvolution[N];
+
 	//Генерация первой популяции
 	for (int i = 0; i < N; i++) {
-		IndividualDiffEvolution ind(limitsDimension, func, acc, aim);
+		IndividualDiffEvolution ind(limitsDimension, func, ammDimens, acc, aim);
 		arrIndividuals[i] = ind;
+		arrIndividuals[i].calcFitness();
+		ind.~IndividualDiffEvolution();
 	}
+	
 	saveBest();
 
 	//Начало работы основной части программы
@@ -65,16 +68,14 @@ void DiffEvolution::startSearch(double acc, double F, double Cr, int N, int gene
 	for (int i = 0; i < generations; i++)
 	{
 		for (int j = 0; j < N; j++) {
-			newInd = mutation.getDonor(arrIndividuals,best);
+			
+			newInd = mutation.getDonor(arrIndividuals,best,N);
 			newInd = crossover(newInd);
+			newInd.calcFitness();
 			surviveCrossover(newInd);
+			newInd.~IndividualDiffEvolution();
 		}
 		saveBest();
 	}
 	
-	/*for (int i = 0; i < (limitsDimension.size() / 2); i++) {
-		cout << "x =" << best.getCoordinats()[i] << endl;
-	}
-	cout << func(best.getCoordinats());*/
-
 }

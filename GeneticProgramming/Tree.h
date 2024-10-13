@@ -48,21 +48,20 @@ private:
 public:
 	Tree() {}
 	Tree(const Tree &copy) :numberFunc(copy.numberFunc), lastVertice(copy.lastVertice),
-		unarFuncUs(copy.unarFuncUs), coef(copy.coef),numVertices(copy.numVertices),numNodes(copy.numNodes),fitness(copy.fitness),
-		unarFunc(copy.unarFunc)
+		unarFuncUs(copy.unarFuncUs), coef(copy.coef),numVertices(copy.numVertices),numNodes(copy.numNodes),fitness(copy.fitness)
 	{
 		//Выделение памяти чтобы не было кучи взаимосвязанных индивидлв
 		if (copy.left != nullptr) {
-			//left = new Tree;
-			left = new Tree(*(copy.left));
+			left = new Tree;
+			*left = Tree(*(copy.left));
 		}
 		if (copy.right != nullptr) {
-			//right = new Tree;
-			right = new Tree(*(copy.right));
+			right = new Tree;
+			*right = Tree(*(copy.right));
 		}
 	}
 
-	void calcFitness(vector<double> x, vector<double> y,double K1);
+	void calcFitness(double* x, double* y, int size,double K1);
 	double getFitness() {
 		return fitness;
 	}
@@ -70,24 +69,24 @@ public:
 	void out();
 	string getFunc();
 	void countNodes(int&);
-	void changeCoef(vector<double>&,int&);
+	void changeCoef(double *,int&);
 	double getNumVertices();
 	double getValue(double x);
 	int getNumNodes() {
 		
 		return numNodes;//numNodes;
 	}
-	//~Tree() {
-	//	if (left != nullptr) {
-	//		delete left;
-	//	}
-	//	if (right != nullptr) {
-	//		delete right;
-	//	}
-	//}
+	~Tree() {
+		if (left != nullptr) {
+			delete left;
+		}
+		if (right != nullptr) {
+			delete right;
+		}
+	}
 	void replaceNode(int, Tree&);
 	
-	void trainWithDE(vector<double> x, vector<double> y, double K1);
+	void trainWithDE(double* x, double* y, int size, double K1);
 
 	void randFunc() {//Используется для оператора мутации
 		if (unarFuncUs) {
@@ -109,6 +108,28 @@ public:
 			return nullptr;
 		}
 		return right;
+	}
+
+
+
+	Tree operator =(const Tree& copy) {
+		numberFunc = copy.numberFunc;
+		lastVertice = copy.lastVertice; 
+		unarFuncUs = copy.unarFuncUs;
+		coef = copy.coef;
+		numVertices = copy.numVertices;
+		numNodes = copy.numNodes;
+		fitness = copy.fitness;
+		//Выделение памяти чтобы не было кучи взаимосвязанных индивидлв
+		if (copy.left != nullptr) {
+			left = new Tree;
+			*left = Tree(*(copy.left));
+		}
+		if (copy.right != nullptr) {
+			right = new Tree;
+			*right = Tree(*(copy.right));
+		}
+		return *this;
 	}
 };
 

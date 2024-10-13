@@ -16,8 +16,9 @@ private:
 	int numIndividuals;
 	int numGeneration;
 	int tournamentSize;
-	vector<Tree> arrayIndividuals;
-	vector<Tree> arrayChildren;
+	Tree* arrayIndividuals;
+	Tree* arrayChildren;
+	int ammInputs;
 
 	SelectionGP selection;
 	CrossoverGP crossover;
@@ -29,7 +30,7 @@ public:
 	GeneticProgramming(double K1, int treeDepth,int tournamentSize) :K1(K1), treeDepth(treeDepth), tournamentSize(tournamentSize){
 		selection = SelectionGP(tournamentSize);
 	}
-	void startTrain(vector<double> x, vector<double>y,int numIndividuals,int numGeneration);
+	void startTrain(double* x, double* y,int size,int numIndividuals,int numGeneration);
 	Tree getBest() {
 		return bestIndividual;
 	}

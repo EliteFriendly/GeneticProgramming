@@ -127,14 +127,10 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="CrossoverGP.cpp" />
     <ClCompile Include="Diff_evolution\DiffEvolution.cpp" />
     <ClCompile Include="Diff_evolution\DiffMutation.cpp" />
     <ClCompile Include="Diff_evolution\IndividualDiffEvolution.cpp" />
-    <ClCompile Include="FormingGP.cpp" />
     <ClCompile Include="GeneticProgramming.cpp" />
-    <ClCompile Include="MutationGP.cpp" />
-    <ClCompile Include="SelectionGP.cpp" />
     <ClCompile Include="Source.cpp" />
     <ClCompile Include="Tree.cpp" />
   </ItemGroup>

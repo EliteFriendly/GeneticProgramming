@@ -9,10 +9,11 @@ class DiffMutation
 {
 private:
 	string type;//Тип мутации
-	vector <int> selectedInd;//Номера выбранных индивидов
+	int* selectedInd = nullptr;//Номера выбранных индивидов
 	double F;//Масштабирующий фактор
 	int ammount;//Количество родителей в донор векторе
-	vector <double> limitsDimension;//Ограничение на каждую ось
+	double* limitsDimension = nullptr;//Ограничение на каждую ось
+	int ammDimens;//Количество пространств
 
 	void outLimits(IndividualDiffEvolution);//Проверка вышел ли индивид за границы
 public:
@@ -41,11 +42,24 @@ public:
 			ammount = 3;//Включая i - тый вектор
 		}
 	}
-	void setLimits(vector<double> limits) {
-		limitsDimension = limits;
+	void setLimits(double* limits, int ammDimens) {
+		limitsDimension = new double[ammDimens * 2];
+		for (int i = 0; i < ammDimens * 2; i++) {
+			limitsDimension[i] = limits[i];
+		}
 	}
 
-	IndividualDiffEvolution getDonor(vector<IndividualDiffEvolution>&, IndividualDiffEvolution&);
+	IndividualDiffEvolution getDonor(IndividualDiffEvolution *, IndividualDiffEvolution&, int);
 
+	~DiffMutation()
+	{
+		if(limitsDimension != nullptr){
+			delete[] limitsDimension;
+		}
+		if (selectedInd != nullptr) {
+			delete[] selectedInd;
+		}
+
+	}
 };
 

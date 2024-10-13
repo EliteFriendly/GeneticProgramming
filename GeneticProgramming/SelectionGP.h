@@ -13,12 +13,12 @@ public:
 	SelectionGP() {}
 	SelectionGP(const SelectionGP& copy) :tournamentSize(copy.tournamentSize) {}
 	SelectionGP(int tournamentSize) :tournamentSize(tournamentSize) {}
-	int getNumParents(vector<Tree>& arrIndividuals) {
+	int getNumParents(Tree* arrIndividuals, int individuals) {
 		double fitness = -9999999;
 		int number, numberBest;
 		for (int i = 0; i < tournamentSize; i++) {
 
-			number = rand() % arrIndividuals.size();
+			number = rand() % individuals;
 			if (arrIndividuals[number].getFitness() > fitness) {
 				fitness = arrIndividuals[number].getFitness();
 				numberBest = number;

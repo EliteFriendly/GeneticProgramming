@@ -1,23 +1,46 @@
 #include "IndividualDiffEvolution.h"
 #include <functional>
 
-IndividualDiffEvolution::IndividualDiffEvolution(vector <double> limitsDimension, function<double(vector<double>)> func, double acc,string aim) :
-	limitsDimension(limitsDimension), func(func), acc(acc), aim(aim) {
-	coordinats.resize(limitsDimension.size() / 2);
+IndividualDiffEvolution::IndividualDiffEvolution(double* limitsDimension, function<double(double*)> func, int ammDimen, double acc,string aim) :
+	ammDimen(ammDimen), func(func), acc(acc), aim(aim) {
+
+	IndividualDiffEvolution:: limitsDimension = new double[ammDimen * 2];
+	for (int i = 0; i < ammDimen*2; i++)
+	{
+		IndividualDiffEvolution::limitsDimension[i] = limitsDimension[i];
+	}
+	coordinats = new double[ammDimen];
 	int n;//Хранит количество точек, временна
 
-	for (int i = 0; i < limitsDimension.size(); i+=2) {
+	for (int i = 0; i < ammDimen*2; i+=2) {
 		n = (abs(limitsDimension[i] - limitsDimension[i + 1])) / acc;
 		coordinats[i / 2] = (rand() % n)*acc + limitsDimension[i];
 
 	}
-	calcFitness();
+
 
 }
 
 IndividualDiffEvolution::IndividualDiffEvolution(const IndividualDiffEvolution& copy):
-	limitsDimension(copy.limitsDimension), func(copy.func), 
-	acc(copy.acc),fitness(copy.fitness),coordinats(copy.coordinats),aim(copy.aim){}
+	ammDimen(copy.ammDimen), func(copy.func), 
+	acc(copy.acc),fitness(copy.fitness),aim(copy.aim){
+
+	if (limitsDimension == nullptr) {
+		limitsDimension = new double[copy.ammDimen * 2];
+	}
+	if (coordinats == nullptr) {
+		coordinats = new double[copy.ammDimen];
+	}
+
+	for (int i = 0; i < ammDimen * 2; i++)
+	{
+		IndividualDiffEvolution::limitsDimension[i] = copy.limitsDimension[i];
+	}
+	for (int i = 0; i < ammDimen; i++)
+	{
+		IndividualDiffEvolution::coordinats[i] = copy.coordinats[i];
+	}
+}
 
 
 
@@ -45,19 +68,18 @@ bool IndividualDiffEvolution::operator >(const IndividualDiffEvolution& copy) {
 		return true;
 	return false;
 }
-bool IndividualDiffEvolution::operator ==(const IndividualDiffEvolution& copy) {
-	if (fitness == copy.fitness)
-		return true;
-	return false;
-}
+//bool IndividualDiffEvolution::operator ==(const IndividualDiffEvolution& copy) {
+//	if (fitness == copy.fitness)
+//		return true;
+//	return false;
+//}
 
 IndividualDiffEvolution IndividualDiffEvolution::operator+(const IndividualDiffEvolution& sec) 
 {
 	IndividualDiffEvolution copy(*this);
-	for (int i = 0; i < copy.coordinats.size(); i++) {
+	for (int i = 0; i < copy.ammDimen; i++) {
 		copy.coordinats[i] += sec.coordinats[i];
 	}
-	copy.fitness = copy.func(coordinats);
 	return copy;
 }
 
@@ -67,18 +89,42 @@ IndividualDiffEvolution IndividualDiffEvolution::operator+(const IndividualDiffE
 IndividualDiffEvolution IndividualDiffEvolution::operator -(const IndividualDiffEvolution& sec)
 {
 	IndividualDiffEvolution copy(*this);
-	for (int i = 0; i < copy.coordinats.size(); i++) {
+	for (int i = 0; i < copy.ammDimen; i++) {
 		copy.coordinats[i] = copy.coordinats[i]- sec.coordinats[i];
 	}
-	copy.fitness = copy.func(coordinats);
 	return copy;
+}
+
+IndividualDiffEvolution IndividualDiffEvolution::operator=(const IndividualDiffEvolution& copy)
+{
+	ammDimen = copy.ammDimen;
+	func = copy.func;
+	acc = copy.acc;
+	fitness = copy.fitness;
+	aim = copy.aim;
+
+	if (limitsDimension == nullptr) {
+		limitsDimension = new double[copy.ammDimen * 2];
+	}
+	if (coordinats == nullptr) {
+		coordinats = new double[copy.ammDimen];
+	}
+
+	for (int i = 0; i < ammDimen * 2; i++)
+	{
+		IndividualDiffEvolution::limitsDimension[i] = copy.limitsDimension[i];
+	}
+	for (int i = 0; i < ammDimen; i++)
+	{
+		IndividualDiffEvolution::coordinats[i] = copy.coordinats[i];
+	}
+	return *this;
 }
 IndividualDiffEvolution IndividualDiffEvolution::operator *(double sec)
 {
 	IndividualDiffEvolution copy(*this);
-	for (int i = 0; i < copy.coordinats.size(); i++) {
+	for (int i = 0; i < copy.ammDimen; i++) {
 		copy.coordinats[i] *= sec;
 	}
-	copy.fitness = copy.func(coordinats);
 	return copy;
 }
