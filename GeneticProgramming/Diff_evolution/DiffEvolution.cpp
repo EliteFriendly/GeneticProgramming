@@ -58,7 +58,6 @@ void DiffEvolution::startSearch(double acc, double F, double Cr, int N, int gene
 		IndividualDiffEvolution ind(limitsDimension, func, ammDimens, acc, aim);
 		arrIndividuals[i] = ind;
 		arrIndividuals[i].calcFitness();
-		ind.~IndividualDiffEvolution();
 	}
 	
 	saveBest();

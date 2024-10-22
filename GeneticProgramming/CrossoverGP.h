@@ -39,7 +39,8 @@ public:
 		//Замена у ребенка выбраного узла у первого и второго родителя
 		child.replaceNode(chosenNode, *nodeParent);
 		//Используется чтобы пронумеровать все узлы
-		int z = 0;
+		int z = 0, lvl = 0;
+		child.recountLayers(lvl);
 		child.countNodes(z);
 		return child;
 

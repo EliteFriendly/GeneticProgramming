@@ -9,15 +9,20 @@ void GeneticProgramming::findBest()
 	}
 }
 
-void GeneticProgramming::startTrain(double* x, double* y, int size, int numIndividuals, int numGeneration)
+void GeneticProgramming::startTrain(double** x, int ammInputs, double* y, int size, int numIndividuals, int numGeneration)
 {
+	mutation = new pointMutation;
+
 	GeneticProgramming::numIndividuals = numIndividuals;
 	GeneticProgramming::numGeneration = numGeneration;
 	arrayIndividuals = new Tree[numIndividuals];
 	arrayChildren = new Tree[numIndividuals];
 	//Первая иницилизация поколения
 	for (int i = 0; i < numIndividuals; i++) {
-		Tree t(treeDepth);
+		Tree t(treeDepth-1,ammInputs);
+		int nodes = 0, lvl = 0;
+		t.recountLayers(lvl);
+		t.countNodes(nodes);
 		arrayIndividuals[i] = t;
 		arrayIndividuals[i].trainWithDE(x, y,size, K1);
 	}
@@ -37,7 +42,7 @@ void GeneticProgramming::startTrain(double* x, double* y, int size, int numIndiv
 			}
 			
 			arrayChildren[j] = crossover.getChild(arrayIndividuals[numParent1], arrayIndividuals[numParent2]);
-			mutation.getMutChild(arrayChildren[j]);
+			mutation->getMutChild(arrayChildren[j]);
 
 			
 

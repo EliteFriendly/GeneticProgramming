@@ -22,7 +22,7 @@ private:
 
 	SelectionGP selection;
 	CrossoverGP crossover;
-	MutationGP mutation;
+	MutationGP* mutation;
 	FormingGP forming;
 
 	void findBest();
@@ -30,16 +30,16 @@ public:
 	GeneticProgramming(double K1, int treeDepth,int tournamentSize) :K1(K1), treeDepth(treeDepth), tournamentSize(tournamentSize){
 		selection = SelectionGP(tournamentSize);
 	}
-	void startTrain(double* x, double* y,int size,int numIndividuals,int numGeneration);
+	void startTrain(double** x, int ammInputs, double* y, int size, int numIndividuals, int numGeneration);
 	Tree getBest() {
 		return bestIndividual;
 	}
-	double getError(vector<double> x, vector<double>y) {
+	double getError(double** x, double *y, int size) {
 		double sum = 0;//Среднеквадратичная ошибка
-		for (int i = 0; i < x.size(); i++) {
+		for (int i = 0; i < size; i++) {
 			sum += pow(bestIndividual.getValue(x[i]) - y[i], 2);
 		}
-		sum = pow(sum / y.size(), 0.5);
+		sum = pow(sum / size, 0.5);
 		return sum;
 
 
