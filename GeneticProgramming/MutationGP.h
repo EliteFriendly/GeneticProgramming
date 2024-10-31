@@ -11,7 +11,7 @@ protected:
 
 public:
 
-	virtual void getMutChild(Tree&) = 0;
+	virtual void doMutChild(Tree&) = 0;
 
 	//void getMutChild2(Tree& ind) {
 	//	int r = ind.getNumNodes();
@@ -73,12 +73,18 @@ public:
 
 class treeMutation : public MutationGP {
 
-	void getMutChild(Tree& ind) {
+	void doMutChild(Tree& ind) {
+
 		int r = ind.getNumNodes();
-		int chosenNode = rand() % r + 1;
+		int chosenNode = rand() % (r + 1);
 		Tree* node = &ind;
-		bool t = false;
+		bool t = false;//Дошли ли до нужного узла
 		while (t == false) {
+			/*
+			Отсчет узлов начинается слева, тем самым мы проверяем если выбранный узел больше 
+			первого узла слева, то значит выбранный узел точно правее и наоборот
+			
+			*/
 			if (node->getNumNodes() == chosenNode) {
 				t = true;
 				break;
@@ -106,16 +112,25 @@ class treeMutation : public MutationGP {
 
 class pointMutation : public MutationGP {
 
-	void getMutChild(Tree& ind) {
-		int r = ind.getNumNodes();
+	void doMutChild(Tree& ind) {
+		int r = ind.getNumNodes()+1;
 		int chosenNode;//То что будет проверять мутируется ли узел
 		for (int i = 0; i < r; i++) {
-			chosenNode = rand() % r + 1;
+
+			//Проверяем каждый узел на шанс мутации
+			//Мутация только средняя
+
+			chosenNode = rand() % (r + 1);
 			if (chosenNode == 0) {
 				//Если вероятность прокнула, то идем о i-го узла
 				Tree* node = &ind;
 				bool t = false;
 				while (t == false) {
+					/*
+						Отсчет узлов начинается слева, тем самым мы проверяем если выбранный узел больше
+					первого узла слева, то значит выбранный узел точно правее и наоборот
+
+					*/
 					if (node->getNumNodes() == i) {
 						t = true;
 						break;

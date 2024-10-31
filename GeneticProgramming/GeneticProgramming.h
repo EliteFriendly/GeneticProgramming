@@ -20,15 +20,15 @@ private:
 	Tree* arrayChildren;
 	int ammInputs;
 
-	SelectionGP selection;
-	CrossoverGP crossover;
+	SelectionGP* selection;
+	CrossoverGP* crossover;
 	MutationGP* mutation;
 	FormingGP forming;
 
 	void findBest();
 public:
 	GeneticProgramming(double K1, int treeDepth,int tournamentSize) :K1(K1), treeDepth(treeDepth), tournamentSize(tournamentSize){
-		selection = SelectionGP(tournamentSize);
+		
 	}
 	void startTrain(double** x, int ammInputs, double* y, int size, int numIndividuals, int numGeneration);
 	Tree getBest() {

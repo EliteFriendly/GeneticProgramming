@@ -7,29 +7,40 @@ using namespace std;
 
 class CrossoverGP
 {
+protected:
+
 public:
-	Tree getChild(Tree first, Tree second) {
+	virtual Tree getChild(Tree first, Tree second) = 0;
+};
+
+
+
+class StandartCrossover : public CrossoverGP {
+
+
+
+	Tree getChild(Tree &first, Tree &second) {
 
 		Tree child(first);
 		int r = child.getNumNodes();
-		int chosenNode = rand() % r + 1;
+		int chosenNode = rand() % r;
 
 		//¬ыбор рандомного узла дл€ 2 родител€
 		int r2 = second.getNumNodes();
-		chosenNode = rand() % r2 + 1;
+		int chosenNode2 = rand() % (r2 + 1);
 		Tree* nodeParent = &second;
 		bool t = false;
 		//Ќачало спуска до этого узла
 		while (t == false) {
-			if (nodeParent->getNumNodes() == chosenNode) {
+			if (nodeParent->getNumNodes() == chosenNode2) {
 				t = true;
 				break;
 			}
-			if (nodeParent->getLeft() != nullptr and chosenNode <= nodeParent->getLeft()->getNumNodes()) {
+			if (nodeParent->getLeft() != nullptr and chosenNode2 <= nodeParent->getLeft()->getNumNodes()) {
 				nodeParent = nodeParent->getLeft();
 				continue;
 			}
-			if (nodeParent->getRight() != nullptr and chosenNode <= nodeParent->getRight()->getNumNodes()) {
+			if (nodeParent->getRight() != nullptr and chosenNode2 <= nodeParent->getRight()->getNumNodes()) {
 				nodeParent = nodeParent->getRight();
 				continue;
 			}
@@ -45,5 +56,167 @@ public:
 		return child;
 
 	}
+};
+
+
+class OnepointCrossover : public CrossoverGP {
+
+private:
+
+	int* arrayReach;//0 - недостижима 1 - достижима
+
+
+	void findReach(Tree &first, Tree &second) {
+
+		int ammNodes = first.getNumNodes();
+
+		arrayReach = new int[ammNodes];
+
+		for (int i = 0; i < ammNodes; i++) {
+			arrayReach[i] = 0;
+		}
+		for (int i = 0; i < ammNodes; i++) {
+
+			//ѕровер€ем каждый узел на то, что он будет достижим
+
+			Tree* node1 = &first;
+			Tree* node2 = &second;
+			/*
+			≈сли узел что мы ищем уже был проверен, то его пропускаем
+			*/
+			while (arrayReach[i]==0) {
+				/*
+					ќтсчет узлов начинаетс€ слева, тем самым мы провер€ем если выбранный узел больше
+				первого узла слева, то значит выбранный узел точно правее и наоборот
+
+				*/
+				if (node1->getNumNodes() == i) {
+					//≈сли узел был достигнут, то измен€ем значение в массиве
+					arrayReach[node1->getNumNodes()] = 1;
+					break;
+				}
+				if (node1->getLeft() != nullptr and i <= node1->getLeft()->getNumNodes()) {
+					//ѕроверка что оба узла хран€т одну функцию
+					if ((node1->getUnar() == node2->getUnar()) and (node1->getLastVertice()== node2->getLastVertice())) {
+						node1 = node1->getLeft();//»дем по маршруту и там и с€м
+						node2 = node2->getLeft();
+						arrayReach[node1->getNumNodes()] = 1;//ѕройденный узел отмечаем
+						continue;
+					}
+					else {
+						//≈сли оказалс€ 1 узел последний
+						if (node1->getLastVertice() or node2->getLastVertice()) {
+							arrayReach[node1->getNumNodes()] = 1;//ƒанный последний узел достижим
+							arrayReach[i] = 0;//ј искомый - нет
+							break;
+						}
+						else {//≈сли не совпали
+							 
+							//¬друг узел справа окажетс€ тем самым
+							if (node1->getRight()->getNumNodes() == i) {
+								arrayReach[i] = 1;
+								break;
+							}
+							else {//»наче говорим что правый достижим
+								arrayReach[node1->getRight()->getNumNodes()] = 1;
+								break;
+							}
+						}
+
+					}
+					
+					
+				}
+				//јналогично но справа
+				if (node1->getRight() != nullptr and i <= node1->getRight()->getNumNodes()) {
+					if ((node1->getUnar() == node2->getUnar()) and (node1->getLastVertice() == node2->getLastVertice())) {
+						node1 = node1->getRight();
+						node2 = node2->getRight();
+						arrayReach[node1->getNumNodes()] = 1;
+						continue;
+					}
+					else {
+						if (node1->getLastVertice()) {
+							arrayReach[node1->getNumNodes()] = 1;
+							arrayReach[i] = 0;
+							break;
+						}
+						else {
+							if (node1->getRight()->getNumNodes() == i) {
+								arrayReach[i] = 1;
+								break;
+							}
+							else {
+								arrayReach[node1->getRight()->getNumNodes()] = 1;
+								break;
+							}
+						}
+						
+					}
+				}
+
+			}
+			
+
+
+
+
+			
+		}
+
+	}
+
+
+
+public:
+
+	Tree getChild(Tree first, Tree second) {
+
+		Tree child(first);
+		findReach(child, second);
+		int chosenNode = rand() % child.getNumNodes();
+
+		while (!arrayReach[chosenNode]) {
+			chosenNode = rand() % child.getNumNodes();
+		}
+
+
+		//≈сли веро€тность прокнула, то идем о i-го узла
+		Tree* node1 = &first;
+		Tree* node2 = &second;
+		bool t = false;
+		while (t == false) {
+			/*
+				ќтсчет узлов начинаетс€ слева, тем самым мы провер€ем если выбранный узел больше
+			первого узла слева, то значит выбранный узел точно правее и наоборот
+
+			*/
+			if (node1->getNumNodes() == chosenNode) {
+				t = true;
+				break;
+			}
+			if (node1->getLeft() != nullptr and chosenNode <= node1->getLeft()->getNumNodes()) {
+				node1 = node1->getLeft();
+				node2 = node2->getLeft();
+				continue;
+			}
+			if (node1->getRight() != nullptr and chosenNode <= node1->getRight()->getNumNodes()) {
+				node1 = node1->getRight();
+				node2 = node2->getRight();
+				continue;
+			}
+
+		}
+		
+		child.replaceNode(chosenNode, *node2);
+		//»спользуетс€ чтобы пронумеровать все узлы
+		int z = 0, lvl = 0;
+		child.recountLayers(lvl);
+		child.countNodes(z);
+		return child;
+
+	}
+
+
 };
 

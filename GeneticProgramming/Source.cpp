@@ -24,10 +24,22 @@ double func3(double x) {
 }
 
 /*
-ЭТОТ АЛГОРИТМ РЕАЛИЗОВАН ТОЛЬКО ДЛЯ 1 ВХОДА И 1 ВЫХОДА
+* ЗАПОМНИТЬ 
+* random_device rd;
+
+		mt19937_64 gen(rd());
+		ГЕНЕРАТОР БЕЗ ОГРАНИЧЕНИЙ
+
+ЭТОТ АЛГОРИТМ РЕАЛИЗОВАН ТОЛЬКО ДЛЯ 1 ВЫХОДА
+
+Из за чего алгоритм может перестать работать:
+Исправил ChosenNode с rand()%r+1 на то что стоит(?)
+
+
+
 
 Что нужно изменить:
-Исправить подсчет пригодности для нескольких входов + прочая шелуха от этого изменения
+
 
 
 
@@ -45,7 +57,7 @@ void yi(int* in) {
 void main() {
 	setlocale(0, "");
 	//srand(10);
-	srand(67);
+	srand(71);
 	//Формирование выборки для обучения
 	int ammount = 100;
 	double left = 0.2;
@@ -58,10 +70,10 @@ void main() {
 	for (int i = 0; i < ammount; i++) {
 		x[i] = new double[1];
 		x[i][0] = left + h * i;
-		y[i] = func1(x[i][0]);
+		y[i] = func3(x[i][0]);
 	}
 
-	GeneticProgramming proba(1, 3, 3);
+	GeneticProgramming proba(1.2, 3, 3);
 	proba.startTrain(x,1, y,ammount, 50, 50);
 	
 	cout << proba.getBest().getFunc();

@@ -12,6 +12,8 @@ void GeneticProgramming::findBest()
 void GeneticProgramming::startTrain(double** x, int ammInputs, double* y, int size, int numIndividuals, int numGeneration)
 {
 	mutation = new pointMutation;
+	selection = new RankedSelection;
+	crossover = new OnepointCrossover;
 
 	GeneticProgramming::numIndividuals = numIndividuals;
 	GeneticProgramming::numGeneration = numGeneration;
@@ -20,9 +22,11 @@ void GeneticProgramming::startTrain(double** x, int ammInputs, double* y, int si
 	//Первая иницилизация поколения
 	for (int i = 0; i < numIndividuals; i++) {
 		Tree t(treeDepth-1,ammInputs);
+		//Подсчет узлов и уровней
 		int nodes = 0, lvl = 0;
 		t.recountLayers(lvl);
 		t.countNodes(nodes);
+
 		arrayIndividuals[i] = t;
 		arrayIndividuals[i].trainWithDE(x, y,size, K1);
 	}
@@ -33,16 +37,17 @@ void GeneticProgramming::startTrain(double** x, int ammInputs, double* y, int si
 
 	for (int i = 0; i < numGeneration; i++) {
 		cout << "Номер генерации = " << i << endl;
+		selection->setArrIndividuals(arrayIndividuals, numIndividuals);
 		for (int j = 0; j < numIndividuals; j++) {
-
-			numParent1 = selection.getNumParents(arrayIndividuals, numIndividuals);
-			numParent2 = selection.getNumParents(arrayIndividuals, numIndividuals);
+			
+			numParent1 = selection->getNumParents();
+			numParent2 = selection->getNumParents();
 			while (numParent1 == numParent2) {
-				numParent2 = selection.getNumParents(arrayIndividuals, numIndividuals);
+				numParent2 = selection->getNumParents();
 			}
 			
-			arrayChildren[j] = crossover.getChild(arrayIndividuals[numParent1], arrayIndividuals[numParent2]);
-			mutation->getMutChild(arrayChildren[j]);
+			arrayChildren[j] = crossover->getChild(arrayIndividuals[numParent1], arrayIndividuals[numParent2]);
+			mutation->doMutChild(arrayChildren[j]);
 
 			
 

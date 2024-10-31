@@ -33,8 +33,9 @@ void Tree::calcFitness(double** x, double* y, int size,double K1)
 		error += pow(y[i] - getValue(x[i]), 2);
 	}
 	fitness = (1 / (1 + pow(error, 0.5))) * (20 - K1 * numNodes);
-	if (fitness == NAN) {
-		cout << 1;
+	if (fitness == NULL) {
+		cout << "Фитнес равен NAN";
+		exit(0);
 	}
 }
 
@@ -44,7 +45,7 @@ Tree::Tree(int d, int numInputs)
 	//Случай если дошли до самого конца
 	if (d == 0) {
 		lastVertice = true;
-		if (rand() % 2) {
+		if (rand() % (numInputs+1)) {
 			numInput = rand() % numInputs;
 			numVertices = 0;
 		}
@@ -90,37 +91,34 @@ string Tree::getFunc()
 		}
 
 	}
-	if (left != nullptr) {
-		ss << '(';
-		ss<<left->getFunc();
-	}
-
-	if (unarFuncUs) {
-		
-		if (numberFunc == 0 and !lastVertice) {
+	else {
+		if (left != nullptr) {
 			ss << '(';
+			ss << left->getFunc();
 		}
-		else {
-			ss << strUnarFunc[numberFunc];
-			if (lastVertice == false) {
+		if (unarFuncUs) {
+			if (numberFunc == 0 and !lastVertice) {
 				ss << '(';
 			}
+			else {
+				ss << strUnarFunc[numberFunc];
+				if (lastVertice == false) {
+					ss << '(';
+				}
+			}
 		}
+		else {
+			if (!lastVertice) {
+				ss << strBinaryFunc[numberFunc];
+			}
 
-		
-
-
-	}
-	else {
-		if (!lastVertice) {
-			ss << strBinaryFunc[numberFunc];
 		}
-
+		if (right != nullptr) {
+			ss << right->getFunc();
+			ss << ')';
+		}
 	}
-	if (right != nullptr) {
-		ss<<right->getFunc();
-		ss << ')';
-	}
+	
 
 	return ss.str();
 }
@@ -177,7 +175,7 @@ double Tree::getValue(double* x)
 			return x[numInput];
 		}
 		else {
-			cout << "Непредвиденность";
+			cout << "Непредвиденность в getValue";
 			exit(0);
 		}
 	}
@@ -224,16 +222,16 @@ void Tree::trainWithDE(double** x, double* y, int size, double K1)
 
 	for (int i = 0; i < numVertices * 2; i++) {
 		if (i % 2) {
-			limits[i] = 10;
+			limits[i] = 30;
 		}
 		else {
-			limits[i] = -10;
+			limits[i] = -30;
 		}
 	}
 
 
 	DiffEvolution DE(func, limits, numVertices, "targetToBest1", "max");
-	DE.startSearch(0.01, 0.5, 0.5, 50, 50);
+	DE.startSearch(0.01, 0.5, 0.5, 5, 5);
 	int i = 0;
 	double* coef = DE.getBestCoordinates();
 	changeCoef(coef, i);

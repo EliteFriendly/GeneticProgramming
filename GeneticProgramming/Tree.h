@@ -56,6 +56,8 @@ public:
 		unarFuncUs(copy.unarFuncUs), coef(copy.coef),numVertices(copy.numVertices),numNodes(copy.numNodes),fitness(copy.fitness),
 		layerLevel(copy.layerLevel), numInput(copy.numInput), ammInputs(copy.ammInputs)
 	{
+		/*this->operator=(copy);
+		cout << 1;*/
 		//Выделение памяти чтобы не было кучи взаимосвязанных индивидлв
 		if (copy.left != nullptr) {
 			if (left != nullptr) {
@@ -65,7 +67,7 @@ public:
 			*left = Tree(*(copy.left));
 		}
 		else {
-			if (unarFuncUs and left != nullptr) {
+			if (left != nullptr) {
 				delete left;
 				left = nullptr;
 			}
@@ -77,6 +79,13 @@ public:
 			right = new Tree;
 			*right = Tree(*(copy.right));
 		}
+		else {
+			if (right != nullptr) {
+				delete right;
+				right = nullptr;
+			}
+		}
+		
 	}
 
 	void calcFitness(double** x, double* y, int size,double K1);
@@ -86,6 +95,13 @@ public:
 	Tree(int d,int numInputs);
 	string getFunc();
 
+	bool getUnar() {
+		return unarFuncUs;
+	}
+	bool getLastVertice() {
+		return lastVertice;
+	}
+
 	void countNodes(int&);
 	void recountLayers(int);
 
@@ -94,7 +110,7 @@ public:
 	double getValue(double *x);
 	int getNumNodes() {
 		
-		return numNodes;//numNodes;
+		return numNodes;
 	}
 	int getAmmInputs() {
 		return ammInputs;
@@ -102,9 +118,11 @@ public:
 	~Tree() {
 		if (left != nullptr) {
 			delete left;
+			left = nullptr;
 		}
 		if (right != nullptr) {
 			delete right;
+			right = nullptr;
 		}
 	}
 	void replaceNode(int, Tree&);
@@ -118,6 +136,7 @@ public:
 				numVertices = 1;
 			}
 			else {
+				numVertices = 0;
 				numInput = rand() % ammInputs;
 			}
 		}
@@ -147,6 +166,8 @@ public:
 
 
 	Tree operator =(const Tree& copy) {
+
+
 		numberFunc = copy.numberFunc;
 		layerLevel = copy.layerLevel;
 		lastVertice = copy.lastVertice; 
@@ -163,10 +184,11 @@ public:
 				delete left;
 			}
 			left = new Tree;
+			//left->operator=(*copy.left);
 			*left = Tree(*(copy.left));
 		}
 		else {
-			if (unarFuncUs and left != nullptr) {
+			if (left != nullptr) {
 				delete left;
 				left = nullptr;
 			}
@@ -176,7 +198,14 @@ public:
 				delete right;
 			}
 			right = new Tree;
+			//right->operator=(*copy.right);
 			*right = Tree(*(copy.right));
+		}
+		else {
+			if (right != nullptr) {
+				delete right;
+				right = nullptr;
+			}
 		}
 		return *this;
 	}
