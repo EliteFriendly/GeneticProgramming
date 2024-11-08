@@ -37,7 +37,7 @@ private:
 		[](double x) {return sin(x); },
 		[](double x) {return cos(x); },
 		[](double x) {if (x == 0) return 100000.0; return log(abs(x)); },
-		[](double x) {if (x >= 10) return exp(10); return exp(x); }
+		[](double x) {if (x >= 10) return exp(10); if (x <= -10) return(exp(-10)); return exp(x); }
 
 	};//Выборка из унарных функций
 	vector<function <double(double, double)>> binaryFunc = {
@@ -107,6 +107,9 @@ public:
 
 	void changeCoef(double *,int&);
 	double getNumVertices();
+	int getNumFunc() {
+		return numberFunc;
+	}
 	double getValue(double *x);
 	int getNumNodes() {
 		
@@ -126,7 +129,8 @@ public:
 		}
 	}
 	void replaceNode(int, Tree&);
-	
+	void changeNode(int, Tree&);
+
 	void trainWithDE(double** x, double* y, int size, double K1);
 
 	void randFunc() {//Используется для оператора мутации

@@ -11,8 +11,8 @@ void GeneticProgramming::findBest()
 
 void GeneticProgramming::startTrain(double** x, int ammInputs, double* y, int size, int numIndividuals, int numGeneration)
 {
-	mutation = new pointMutation;
-	selection = new RankedSelection;
+	mutation = new TreeMutation(treeDepth-1);
+	selection = new ProportionalSelection;
 	crossover = new OnepointCrossover;
 
 	GeneticProgramming::numIndividuals = numIndividuals;
@@ -36,10 +36,11 @@ void GeneticProgramming::startTrain(double** x, int ammInputs, double* y, int si
 	int numParent1, numParent2;
 
 	for (int i = 0; i < numGeneration; i++) {
-		cout << "Номер генерации = " << i << endl;
+		
 		selection->setArrIndividuals(arrayIndividuals, numIndividuals);
 		for (int j = 0; j < numIndividuals; j++) {
-			
+			//cout << "Номер генерации = " << i <<", Номер индивида = " << j << endl;
+		
 			numParent1 = selection->getNumParents();
 			numParent2 = selection->getNumParents();
 			while (numParent1 == numParent2) {

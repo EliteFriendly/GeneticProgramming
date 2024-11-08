@@ -16,8 +16,8 @@ private:
 	int numIndividuals;
 	int numGeneration;
 	int tournamentSize;
-	Tree* arrayIndividuals;
-	Tree* arrayChildren;
+	Tree* arrayIndividuals = nullptr;
+	Tree* arrayChildren = nullptr;
 	int ammInputs;
 
 	SelectionGP* selection;
@@ -42,9 +42,15 @@ public:
 		sum = pow(sum / size, 0.5);
 		return sum;
 
+	}
 
-
-
+	~GeneticProgramming() {
+		if (arrayIndividuals != nullptr) {
+			delete[] arrayIndividuals;
+		}
+		if (arrayChildren != nullptr) {
+			delete[] arrayChildren;
+		}
 	}
 };
 

@@ -67,7 +67,7 @@ void DiffEvolution::startSearch(double acc, double F, double Cr, int N, int gene
 	for (int i = 0; i < generations; i++)
 	{
 		for (int j = 0; j < N; j++) {
-			
+			//cout << "Номер генерации = " << i << ", Номер индивида = " << j << endl;
 			newInd = mutation.getDonor(arrIndividuals,best,N);
 			newInd = crossover(newInd);
 			newInd.calcFitness();

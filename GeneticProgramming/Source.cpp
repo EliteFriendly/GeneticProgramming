@@ -32,18 +32,22 @@ double func3(double x) {
 
 ЭТОТ АЛГОРИТМ РЕАЛИЗОВАН ТОЛЬКО ДЛЯ 1 ВЫХОДА
 
-Из за чего алгоритм может перестать работать:
+
+!!!Не знаю что делать если функциональное множества меняется на термальное
+
+*Из за чего алгоритм может перестать работать:
+
 Исправил ChosenNode с rand()%r+1 на то что стоит(?)
 
+Перетащил findReach в родителя
+
+
+*Что нужно изменить:
+Добавить деструкторов во все щели, чтобы не было переполнения памяти	
 
 
 
-Что нужно изменить:
-
-
-
-
-Оптимизация момент:
+*Оптимизация момент:
 
 
 
@@ -57,7 +61,7 @@ void yi(int* in) {
 void main() {
 	setlocale(0, "");
 	//srand(10);
-	srand(71);
+	srand(72);
 	//Формирование выборки для обучения
 	int ammount = 100;
 	double left = 0.2;
@@ -72,10 +76,14 @@ void main() {
 		x[i][0] = left + h * i;
 		y[i] = func3(x[i][0]);
 	}
+	for (int i = 0; i < 1000; i++) {
+		srand(i);
+		cout << "Номер рандомайзера = " << i<<endl;
+		GeneticProgramming proba(1.2, 3, 3);
+		proba.startTrain(x, 1, y, ammount, 20, 100);
+	}
 
-	GeneticProgramming proba(1.2, 3, 3);
-	proba.startTrain(x,1, y,ammount, 50, 50);
 	
-	cout << proba.getBest().getFunc();
+	//cout << proba.getBest().getFunc();
 
 }

@@ -10,7 +10,7 @@
 class SelectionGP
 {
 protected:
-	int tournamentSize=3;
+
 	double* arrayFitness = nullptr;
 	int sizeArray;
 
@@ -36,10 +36,6 @@ protected:
 
 
 public:
-
-	void setTournamentSize(int ts) {
-		tournamentSize = ts;
-	}
 
 
 	virtual void setFitnessArray(double* inputArray, int size) {
@@ -91,7 +87,13 @@ public:
 
 	virtual int getNumParents() = 0;
 
-	SelectionGP() {}
+
+
+	~SelectionGP() {
+		if (arrayFitness != nullptr) {
+			delete[]arrayFitness;
+		}
+	}
 };
 
 
@@ -104,6 +106,10 @@ protected:
 
 
 	void ranked() {
+		if (rankArray != nullptr) {
+			delete[] rankArray;
+			rankArray = nullptr;
+		}
 		rankArray = new double[sizeArray];
 		int rank = 1;
 		int wh = 0;
@@ -152,6 +158,13 @@ public:
 	int getNumParents() {
 		return (velocityChoice(rankArray));
 	}
+
+	~RankedSelection() {
+		if (rankArray != nullptr) {
+			delete[] rankArray;
+			rankArray = nullptr;
+		}
+	}
 };
 
 
@@ -161,6 +174,12 @@ protected:
 	double* normalArray = nullptr;
 
 	void normalisation() {
+
+		if (normalArray != nullptr) {
+			delete[] normalArray;
+			normalArray = nullptr;
+		}
+
 		normalArray = new double[sizeArray];
 		double min = 0;
 		//¬ыравнивание до положительных значений
@@ -197,12 +216,23 @@ public:
 	int getNumParents() {
 		return (velocityChoice(normalArray));
 	}
+
+	~ProportionalSelection() {
+		if (normalArray != nullptr) {
+			delete[] normalArray;
+			normalArray = nullptr;
+		}
+	}
 };
 
 
 
 
 class TournamentSelection :public SelectionGP {
+
+	int tournamentSize;
+
+	TournamentSelection(int tournamentSize) :tournamentSize(tournamentSize) {}
 
 
 	int getNumParents() {

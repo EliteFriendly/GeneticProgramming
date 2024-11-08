@@ -29,6 +29,7 @@ void Tree::recountLayers(int level)
 void Tree::calcFitness(double** x, double* y, int size,double K1)
 {
 	double error = 0;
+
 	for (int i = 0; i < size; i++) {
 		error += pow(y[i] - getValue(x[i]), 2);
 	}
@@ -201,6 +202,46 @@ void Tree::replaceNode(int search, Tree& newNode)//«амена выбранного узла
 	}
 	if (right != nullptr and search <= right->getNumNodes()) {
 		right->replaceNode(search, newNode);
+	}
+}
+
+void Tree::changeNode(int search, Tree& newNode)//ќтличие от replace в том, что не мен€ютс€ остальные узлы
+{
+	if (numNodes == search) {//≈сли мы дошли до узла под каким то номером
+		if (newNode.getLastVertice()) {
+			//*this = newNode;
+			return;
+		}
+		if (newNode.getUnar() == unarFuncUs) {
+			numberFunc = newNode.getNumFunc();
+		}
+		else {
+			if (newNode.getUnar()) {
+				unarFuncUs = true;
+				numberFunc = newNode.getNumFunc();
+				left->~Tree();
+				left = nullptr;
+			}
+			else {
+				unarFuncUs = false;
+				numberFunc = newNode.getNumFunc();
+				if (left != nullptr) {
+					delete left;
+				}
+				left = new Tree;
+				//left->operator=(*copy.left);
+				*left = Tree(*(newNode.left));
+				left->numNodes = -1;//—делано дл€ того, чтобы не было изменений в этой ветви
+			}
+		}
+		return;
+	}
+
+	if (left != nullptr and search <= left->getNumNodes()) {
+		left->changeNode(search, newNode);
+	}
+	if (right != nullptr and search <= right->getNumNodes()) {
+		right->changeNode(search, newNode);
 	}
 }
 
