@@ -16,22 +16,41 @@ private:
 	int numIndividuals;
 	int numGeneration;
 	int tournamentSize;
-	vector<Tree> arrayIndividuals;
-	vector<Tree> arrayChildren;
+	Tree* arrayIndividuals = nullptr;
+	Tree* arrayChildren = nullptr;
+	int ammInputs;
 
-	SelectionGP selection;
-	CrossoverGP crossover;
-	MutationGP mutation;
+	SelectionGP* selection;
+	CrossoverGP* crossover;
+	MutationGP* mutation;
 	FormingGP forming;
 
 	void findBest();
 public:
 	GeneticProgramming(double K1, int treeDepth,int tournamentSize) :K1(K1), treeDepth(treeDepth), tournamentSize(tournamentSize){
-		selection = SelectionGP(tournamentSize);
+		
 	}
-	void startTrain(vector<double> x, vector<double>y,int numIndividuals,int numGeneration);
+	void startTrain(double** x, int ammInputs, double* y, int size, int numIndividuals, int numGeneration);
 	Tree getBest() {
 		return bestIndividual;
+	}
+	double getError(double** x, double *y, int size) {
+		double sum = 0;//Среднеквадратичная ошибка
+		for (int i = 0; i < size; i++) {
+			sum += pow(bestIndividual.getValue(x[i]) - y[i], 2);
+		}
+		sum = pow(sum / size, 0.5);
+		return sum;
+
+	}
+
+	~GeneticProgramming() {
+		if (arrayIndividuals != nullptr) {
+			delete[] arrayIndividuals;
+		}
+		if (arrayChildren != nullptr) {
+			delete[] arrayChildren;
+		}
 	}
 };
 

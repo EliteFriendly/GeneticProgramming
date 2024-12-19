@@ -9,7 +9,18 @@
 class FormingGP
 {
 public:
-	void replaceGeneration(vector<Tree>& arrIndividuals, vector<Tree>& arrChildren);
+	void replaceGeneration(Tree* arrIndividuals, Tree* arrChildren, int individuals) {
+		for (int i = 0; i < individuals; i++) {
+			for (int j = 0; j < individuals; j++) {
+				if (arrIndividuals[i].getFitness() < arrChildren[j].getFitness()) {
+					arrIndividuals[i] = arrChildren[j];
+					arrChildren[j] = Tree();
+					break;
+				}
+
+			}
+		}
+	}
 
 };
 

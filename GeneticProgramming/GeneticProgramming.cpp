@@ -9,17 +9,26 @@ void GeneticProgramming::findBest()
 	}
 }
 
-void GeneticProgramming::startTrain(vector<double> x, vector<double> y, int numIndividuals, int numGeneration)
+void GeneticProgramming::startTrain(double** x, int ammInputs, double* y, int size, int numIndividuals, int numGeneration)
 {
+	mutation = new TreeMutation(treeDepth-1);
+	selection = new ProportionalSelection;
+	crossover = new OnepointCrossover;
+
 	GeneticProgramming::numIndividuals = numIndividuals;
 	GeneticProgramming::numGeneration = numGeneration;
-	arrayIndividuals.resize(numIndividuals);
-	arrayChildren.resize(numIndividuals);
+	arrayIndividuals = new Tree[numIndividuals];
+	arrayChildren = new Tree[numIndividuals];
 	//Первая иницилизация поколения
 	for (int i = 0; i < numIndividuals; i++) {
-		Tree t(treeDepth);
+		Tree t(treeDepth-1,ammInputs);
+		//Подсчет узлов и уровней
+		int nodes = 0, lvl = 0;
+		t.recountLayers(lvl);
+		t.countNodes(nodes);
+
 		arrayIndividuals[i] = t;
-		arrayIndividuals[i].calcFitness(x, y, K1);
+		arrayIndividuals[i].trainWithDE(x, y,size, K1);
 	}
 
 	findBest();//Первый поиск лучшего индивида
@@ -27,17 +36,27 @@ void GeneticProgramming::startTrain(vector<double> x, vector<double> y, int numI
 	int numParent1, numParent2;
 
 	for (int i = 0; i < numGeneration; i++) {
+		
+		selection->setArrIndividuals(arrayIndividuals, numIndividuals);
 		for (int j = 0; j < numIndividuals; j++) {
-			numParent1 = selection.getNumParents(arrayIndividuals);
-			numParent2 = selection.getNumParents(arrayIndividuals);
+			//cout << "Номер генерации = " << i <<", Номер индивида = " << j << endl;
+		
+			numParent1 = selection->getNumParents();
+			numParent2 = selection->getNumParents();
 			while (numParent1 == numParent2) {
-				numParent2 = selection.getNumParents(arrayIndividuals);
+				numParent2 = selection->getNumParents();
 			}
-			arrayChildren[j] = crossover.getChild(arrayIndividuals[numParent1], arrayIndividuals[numParent2]);
-			mutation.getMutChild(arrayChildren[j]);
-			arrayChildren[j].calcFitness(x, y, K1);
+			
+			arrayChildren[j] = crossover->getChild(arrayIndividuals[numParent1], arrayIndividuals[numParent2]);
+			mutation->doMutChild(arrayChildren[j]);
+
+			
+
+			arrayChildren[j].trainWithDE(x, y,size, K1);
+			/*arrayChildren[j].out();
+			cout << endl;*/
 		}
-		forming.replaceGeneration(arrayIndividuals, arrayChildren);
+		forming.replaceGeneration(arrayIndividuals, arrayChildren, numIndividuals);
 		findBest();
 
 

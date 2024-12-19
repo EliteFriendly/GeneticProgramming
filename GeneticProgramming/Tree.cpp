@@ -1,4 +1,6 @@
 #include "Tree.h"
+#include <sstream>
+
 
 void Tree::countNodes(int& ammount)
 {
@@ -9,33 +11,49 @@ void Tree::countNodes(int& ammount)
 	if (right != nullptr) {
 		right->countNodes(ammount);
 	}
-	if (lastVertice == false) {
-		ammount++;
-	}
-	
 	numNodes = ammount;
+	ammount++;
 }
 
-void Tree::calcFitness(vector<double> x, vector<double> y,double K1)
+void Tree::recountLayers(int level)
+{
+	layerLevel = level;
+	if (left != nullptr) {
+		left->recountLayers(level+1);
+	}
+	if (right != nullptr) {
+		right->recountLayers(level+1);
+	}
+}
+
+void Tree::calcFitness(double** x, double* y, int size,double K1)
 {
 	double error = 0;
-	for (int i = 0; i < y.size(); i++) {
-		error += pow(x[i] - getValue(x[i]), 2);
+
+	for (int i = 0; i < size; i++) {
+		error += pow(y[i] - getValue(x[i]), 2);
 	}
-	fitness = 1 / (1 + pow(error, 0.5)) * (20 - K1 * numNodes);
-	if (fitness == NAN) {
-		cout << 1;
+	fitness = (1 / (1 + pow(error, 0.5))) * (20 - K1 * numNodes);
+	if (fitness == NULL) {
+		cout << "Фитнес равен NAN";
+		exit(0);
 	}
 }
 
-Tree::Tree(int d)
+Tree::Tree(int d, int numInputs)
 {
+	ammInputs = numInputs;
 	//Случай если дошли до самого конца
 	if (d == 0) {
-		unarFuncUs = true;
 		lastVertice = true;
-		numberFunc = 0;
-		numVertices = 1;
+		if (rand() % (numInputs+1)) {
+			numInput = rand() % numInputs;
+			numVertices = 0;
+		}
+		else {
+			numVertices = 1;
+			coef = 1;
+		}
 		return;
 	}
 	
@@ -48,7 +66,7 @@ Tree::Tree(int d)
 		
 		numberFunc = rand() % (unarFunc.size());
 		//Tree a(d - 1);
-		right = new Tree(d-1);
+		right = new Tree(d-1,numInputs);
 	}
 	else {
 		//В случае если бинарная
@@ -56,47 +74,57 @@ Tree::Tree(int d)
 		numberFunc = rand() % (binaryFunc.size());
 		//Tree l(d - 1);
 		//Tree r(d - 1);
-		left = new Tree(d - 1);
-		right = new Tree(d - 1);
+		left = new Tree(d - 1,numInputs);
+		right = new Tree(d - 1,numInputs);
 	}
-	int i = 0;
-	countNodes(i);
 }
 
-void Tree::out()
+
+string Tree::getFunc()
 {
-
-	if (left != nullptr) {
-		cout << '(';
-		left->out();
-	}
-	if (unarFuncUs) {
-		if (lastVertice) {//У последней вершины обязан быть какой то коэффициент
-			cout << coef << '*';
-			cout << strUnarFunc[numberFunc];
-		}
-		if (numberFunc == 0) {
-
+	stringstream ss;
+	if (lastVertice) {
+		if (numVertices == 1) {
+			ss << coef;
 		}
 		else {
-			cout << strUnarFunc[numberFunc];
-			if (lastVertice == false) {
-				cout << '(';
-			}
+			ss <<'X' << numInput;
 		}
-		
-		
+
 	}
 	else {
-		cout<< strBinaryFunc[numberFunc];
+		if (left != nullptr) {
+			ss << '(';
+			ss << left->getFunc();
+		}
+		if (unarFuncUs) {
+			if (numberFunc == 0 and !lastVertice) {
+				ss << '(';
+			}
+			else {
+				ss << strUnarFunc[numberFunc];
+				if (lastVertice == false) {
+					ss << '(';
+				}
+			}
+		}
+		else {
+			if (!lastVertice) {
+				ss << strBinaryFunc[numberFunc];
+			}
+
+		}
+		if (right != nullptr) {
+			ss << right->getFunc();
+			ss << ')';
+		}
 	}
-	if (right != nullptr) {
-		right->out();
-		cout << ')';
-	}
+	
+
+	return ss.str();
 }
 
-void Tree::changeCoef(vector<double>& in,int &z)
+void Tree::changeCoef(double *in,int &z)
 {
 	//Заполнение будет происходить слева направо
 	if (left != nullptr) {//Идем сначала по левой стороне до конца
@@ -105,14 +133,8 @@ void Tree::changeCoef(vector<double>& in,int &z)
 	if (right != nullptr) {//Если нет ничего слева
 		right->changeCoef(in, z);
 	}
-	if (lastVertice) {
-		if (z >= in.size()) {//Случай если выйдет за границы массива
-			coef = 0;
-		}
-		else {
-
-			coef = in[z];//Замена коэффициентов в слечае если все ок
-		}
+	if (lastVertice and numVertices == 1) {
+		coef = in[z];//Замена коэффициентов в случае если все ок
 		z++;//Работа с памятью!!!
 	}
 }
@@ -123,25 +145,44 @@ double Tree::getNumVertices()
 	if (lastVertice) {
 		return numVertices;
 	}
-	if (left != nullptr) {
-		numVertices += left->getNumVertices();
+
+	if (left != nullptr and right != nullptr) {
+		numVertices = left->getNumVertices() + right->getNumVertices();
 	}
-	if (right != nullptr) {
-		numVertices += right->getNumVertices();
+	else {
+		if (left != nullptr) {
+			numVertices = left->getNumVertices();
+		}
+		if (right != nullptr) {
+			numVertices = right->getNumVertices();
+		}
 	}
+
 	return numVertices;
 }
 
-double Tree::getValue(double x)
+double Tree::getValue(double* x)
 {
-	if (right != nullptr and left ==nullptr) {//Если справа что то есть то это точно унарная функци
+	//if (right != nullptr and left ==nullptr) {//Если справа что то есть то это точно унарная функци
 
-		return unarFunc[numberFunc](right->getValue(x));
-		
-	}
+	//	return unarFunc[numberFunc](right->getValue(x));
+	//	
+	//}
 	if (lastVertice) {//Если дошли до вершины
-		double y = coef * unarFunc[numberFunc](x);
-		return y;
+		if (numVertices==1) {
+			return coef;
+		}
+		if (numVertices==0) {
+			return x[numInput];
+		}
+		else {
+			cout << "Непредвиденность в getValue";
+			exit(0);
+		}
+	}
+
+	if (unarFuncUs) {
+		return unarFunc[numberFunc](right->getValue(x));
 	}
 	else {//Если попались в бинарную функцию
 		return binaryFunc[numberFunc](left->getValue(x),right->getValue(x));
@@ -152,20 +193,8 @@ double Tree::getValue(double x)
 void Tree::replaceNode(int search, Tree& newNode)//Замена выбранного узла
 {
 	if (numNodes == search) {//Если мы дошли до узла под каким то номером
-		unarFuncUs = newNode.unarFuncUs;
-		if (unarFuncUs and left != nullptr) {//Если наследовалась унарная функция
-			left = nullptr;
-		}
-		lastVertice = newNode.lastVertice;
-		if (newNode.left != nullptr) {//Выделение памяти
-			left = new Tree(*(newNode.left));
-		}
-		if (newNode.right != nullptr) {
-			right = new Tree(*(newNode.right));
-		}
-		numberFunc = newNode.numberFunc;//Номер функции который используется в узле
-		numVertices = newNode.numVertices;//Количество вершин
-		unarFunc = newNode.unarFunc;
+		*this = newNode;
+		return;
 	}
 	//Поиск по другим узлам если не нашли подходящего номера
 	if (left != nullptr and search <= left->getNumNodes()) {
@@ -174,4 +203,79 @@ void Tree::replaceNode(int search, Tree& newNode)//Замена выбранного узла
 	if (right != nullptr and search <= right->getNumNodes()) {
 		right->replaceNode(search, newNode);
 	}
+}
+
+void Tree::changeNode(int search, Tree& newNode)//Отличие от replace в том, что не меняются остальные узлы
+{
+	if (numNodes == search) {//Если мы дошли до узла под каким то номером
+		if (newNode.getLastVertice()) {
+			//*this = newNode;
+			return;
+		}
+		if (newNode.getUnar() == unarFuncUs) {
+			numberFunc = newNode.getNumFunc();
+		}
+		else {
+			if (newNode.getUnar()) {
+				unarFuncUs = true;
+				numberFunc = newNode.getNumFunc();
+				left->~Tree();
+				left = nullptr;
+			}
+			else {
+				unarFuncUs = false;
+				numberFunc = newNode.getNumFunc();
+				if (left != nullptr) {
+					delete left;
+				}
+				left = new Tree;
+				//left->operator=(*copy.left);
+				*left = Tree(*(newNode.left));
+				left->numNodes = -1;//Сделано для того, чтобы не было изменений в этой ветви
+			}
+		}
+		return;
+	}
+
+	if (left != nullptr and search <= left->getNumNodes()) {
+		left->changeNode(search, newNode);
+	}
+	if (right != nullptr and search <= right->getNumNodes()) {
+		right->changeNode(search, newNode);
+	}
+}
+
+void Tree::trainWithDE(double** x, double* y, int size, double K1)
+{
+	int numVertices = getNumVertices();
+	if (numVertices == 0) {
+		calcFitness(x, y, size, K1);
+		return;
+	}
+	function <double(double*)> func = [&](double* input) {
+		int i = 0;
+		changeCoef(input, i);
+		calcFitness(x, y, size, K1);
+		return fitness;
+		};
+
+	double* limits = new double[numVertices * 2];
+
+	for (int i = 0; i < numVertices * 2; i++) {
+		if (i % 2) {
+			limits[i] = 30;
+		}
+		else {
+			limits[i] = -30;
+		}
+	}
+
+
+	DiffEvolution DE(func, limits, numVertices, "targetToBest1", "max");
+	DE.startSearch(0.01, 0.5, 0.5, 5, 5);
+	int i = 0;
+	double* coef = DE.getBestCoordinates();
+	changeCoef(coef, i);
+	calcFitness(x, y, size, K1);
+
 }
